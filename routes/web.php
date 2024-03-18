@@ -7,6 +7,8 @@ use App\Http\Controllers\TempleteController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\AjaxController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,6 +34,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 
 Route::middleware('auth')->group(function () {
     
+    Route::controller(AjaxController::class)->prefix('ajax')->group(function () {
+        Route::get('/getProductDetails', 'getProductDetails')->name('ajax.getProductDetails');
+    });
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -39,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('merchant', MerchantController::class);
     Route::resource('product', ProductController::class);
     Route::resource('transactions', TransactionController::class);
+    Route::resource('inventories', InventoryController::class);
 });
 
 require __DIR__.'/auth.php';

@@ -37,7 +37,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputAdditionalCost" class="form-label">Additional Cost</label>
-                            <input type="text" name="additional_cost" class="form-control" id="exampleInputAdditionalCost" placeholder="Enter Additional Cost" value="{{ old('additional_cost') }}">
+                            <input type="text" name="price" class="form-control" id="exampleInputAdditionalCost" placeholder="Enter Additional Cost" value="{{ old('price') }}">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputDescription" class="form-label">Description</label>
@@ -45,7 +45,7 @@
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary mt-4 mb-0">Create</button>
-                    <a href="{{ route('product.index') }}" class="btn btn-primary mt-4 mb-0">Back</a>
+                    <a href="{{ route('product.index') }}" class="btn btn-light mt-4 mb-0">Back</a>
                 </form>
             </div>
         </div>

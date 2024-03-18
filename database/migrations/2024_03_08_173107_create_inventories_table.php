@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->tinyInteger('quantity_in_stock');
             $table->date('last_restock_date');
+            $table->integer('quantity')->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('product_id')->references('id')->on('products');

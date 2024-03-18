@@ -36,7 +36,7 @@ class ProductController extends Controller
             $validator = Validator::make($request->all(), [
                 'product_name' => 'required|string|max:255',
                 'unit' => 'required|string|max:11',
-                'additional_cost' => 'nullable|integer|max:255',
+                'price' => 'nullable|integer|max:255',
                 'description' => 'nullable|string',
             ]);
             // dd($request->all());
@@ -48,7 +48,7 @@ class ProductController extends Controller
             Product::create([
                 'name'              => $request->product_name,
                 'unit_id'           => $request->unit,
-                'additional_cost'   => $request->additional_cost,
+                'price'             => $request->price,
                 'description'       => $request->description
             ]);
             return redirect()->route('product.index');
@@ -89,7 +89,7 @@ class ProductController extends Controller
             $validator = Validator::make($request->all(), [
                 'product_name' => 'required|string|max:255',
                 'unit' => 'required|string|max:11',
-                'additional_cost' => 'nullable|integer|max:255',
+                'price' => 'nullable|integer|max:255',
                 'description' => 'nullable|string',
             ]);
     
@@ -99,7 +99,7 @@ class ProductController extends Controller
             $product->update([
                 'name'              => $request->product_name,
                 'unit_id'           => $request->unit,
-                'additional_cost'   => $request->additional_cost,
+                'price'             => $request->price,
                 'description'       => $request->description
             ]);
         } catch (Exception $e) {

@@ -13,7 +13,7 @@ class Product extends Model
         'name',
         'description',
         'unit_id',
-        'additional_cost'
+        'price'
     ];
 
     /**
@@ -24,6 +24,16 @@ class Product extends Model
     public function unit()
     {
         return $this->belongsTo(Unit::class, 'unit_id', 'id');
+    }
+
+    /**
+     * Get the inventory associated with the Product
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function inventory()
+    {
+        return $this->hasOne(Inventory::class, 'product_id', 'id');
     }
     
 }

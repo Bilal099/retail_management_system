@@ -93,38 +93,75 @@ class TransactionController extends Controller
             
             foreach ($request->product as $key => $value) {
                 $transactionDetail = TransactionDetail::create([
-                    'transaction_id'  =>  $transaction->id,
-                    'product_id'  =>  $value,
-                    'quantity'       =>  $request->quantity[$key],
-                    'unit_price'      =>  $request->unit_price[$key],
+                    'transaction_id'    =>  $transaction->id,
+                    'product_id'        =>  $value,
+                    'quantity'          =>  $request->quantity[$key],
+                    'unit_price'        =>  $request->unit_price[$key],
+                    'additional_price'  =>  $request->additional_price[$key],
                 ]);
 
+                // dd($transactionDetail);
+
+                $product = Product::find($value);
                 if ($request->transaction_type == 'purchase') {
                     $inventory = Inventory::where(['product_id'=>$value])->first();
                     if (is_null($inventory)) {
                         $inventory = Inventory::create([
                             'product_id' => $value,
                             'quantity_in_stock' => 1,
-                            'last_restock_date' => $request->transaction_date
+                            'last_restock_date' => $request->transaction_date,
+                            'quantity' => $request->quantity[$key]
                         ]);
-                    } else {
+                        /**
+                         * set price in product object
+                        */
+                        // $calculationForTransaction = $transactionDetail->unit_price * $transactionDetail->quantity;
+                        // $calculationForProduct = $product->unit_price * $inventory->quantity;
+                        // $calculateAvg = ($calculationForTransaction + $calculationForProduct) / ($transactionDetail->quantity + $inventory->quantity);
+                        // dd($calculateAvg);
+                        $product->price = $transactionDetail->unit_price;
+
+                        $product->save();
+                    } 
+                    else {
+                        $quantity = $inventory->quantity;
+
+                        $inventory->quantity = $quantity + $request->quantity[$key];
                         $inventory->quantity_in_stock = 1;
                         $inventory->last_restock_date = $request->transaction_date;
                         $inventory->save();
+
+                        /**
+                         * set price in product object
+                        */
+
+                        if ($quantity == 0) {
+                            $product->price = $transactionDetail->unit_price;
+                        }
+                        else {
+                            $calculationForTransaction = $transactionDetail->unit_price * $transactionDetail->quantity;
+                            $calculationForProduct = $product->price * $quantity;
+                            $calculateAvg = ($calculationForTransaction + $calculationForProduct) / ($transactionDetail->quantity + $quantity);
+
+                            $product->price = $calculateAvg;                           
+                        }
+                        $product->save();
                     }
+
+                    
     
-                    $inventoryDetail = InventoryDetail::where(['inventory_id'=>$inventory->id,'unit_price'=>$request->unit_price[$key]])->first();
-                    if (is_null($inventoryDetail)) {
-                        $inventoryDetail = InventoryDetail::create([
-                            'inventory_id' => $inventory->id,
-                            'unit_price' => $request->unit_price[$key],
-                            'remaining_quantity' => $request->quantity[$key]
-                        ]);
-                    }
-                    else{
-                        $inventoryDetail->remaining_quantity = ($inventoryDetail->remaining_quantity + $request->quantity[$key]);
-                        $inventoryDetail->save();
-                    }
+                    // $inventoryDetail = InventoryDetail::where(['inventory_id'=>$inventory->id,'unit_price'=>$request->unit_price[$key]])->first();
+                    // if (is_null($inventoryDetail)) {
+                    //     $inventoryDetail = InventoryDetail::create([
+                    //         'inventory_id' => $inventory->id,
+                    //         'unit_price' => $request->unit_price[$key],
+                    //         'remaining_quantity' => $request->quantity[$key]
+                    //     ]);
+                    // }
+                    // else{
+                    //     $inventoryDetail->remaining_quantity = ($inventoryDetail->remaining_quantity + $request->quantity[$key]);
+                    //     $inventoryDetail->save();
+                    // }
                 }
                 else{
                     $inventory = Inventory::where(['product_id'=>$value,'quantity_in_stock'=>1])->first();
@@ -134,28 +171,37 @@ class TransactionController extends Controller
                         return redirect()->back()->withInput($request->input())->withErrors($validator)->with('msg', $product->name.' not in stock');                        
                     }
                     else {
-                        $inventoryDetail = $inventory->inventoryDetail
-                        ->where('unit_price',$request->unit_price[$key])
-                        ->where('remaining_quantity', '>=', $request->quantity[$key])
-                        ->first();
-                        if (is_null($inventoryDetail)) {
-                            $product = Product::find($value);
-                            $msg = $product->name.' with "'.$request->unit_price[$key].'" unit price is not avaiable.';
-                            return redirect()->back()->withInput($request->input())->withErrors($validator)->with('msg', $msg);                        
+                        $quantity = $inventory->quantity - $request->quantity[$key];
+                        if ($quantity < 0) {
+                            return redirect()->back()->withInput($request->input())->withErrors($validator)->with('msg', $product->name.' is not available in '.$request->quantity[$key].' quantity.');                        
                         }
                         else{
-                            $remaining_quantity = $inventoryDetail->remaining_quantity - $request->quantity[$key];
-                            $inventoryDetail->remaining_quantity = $remaining_quantity;
-                            $inventoryDetail->save();
-
-                            if ($remaining_quantity == 0) {
-                                $in_stock_quantity = $inventory->inventoryDetail->sum('remaining_quantity');
-                                if ($in_stock_quantity == 0) {
-                                    $inventory->quantity_in_stock = 0;
-                                    $inventory->save();
-                                }
-                            }
+                            $inventory->quantity_in_stock = ($quantity==0)? 0:1;
+                            $inventory->quantity = $quantity;
+                            $inventory->save();
                         }
+                        // $inventoryDetail = $inventory->inventoryDetail
+                        // ->where('unit_price',$request->unit_price[$key])
+                        // ->where('remaining_quantity', '>=', $request->quantity[$key])
+                        // ->first();
+                        // if (is_null($inventoryDetail)) {
+                        //     $product = Product::find($value);
+                        //     $msg = $product->name.' with "'.$request->unit_price[$key].'" unit price is not avaiable.';
+                        //     return redirect()->back()->withInput($request->input())->withErrors($validator)->with('msg', $msg);                        
+                        // }
+                        // else{
+                        //     $remaining_quantity = $inventoryDetail->remaining_quantity - $request->quantity[$key];
+                        //     $inventoryDetail->remaining_quantity = $remaining_quantity;
+                        //     $inventoryDetail->save();
+
+                        //     if ($remaining_quantity == 0) {
+                        //         $in_stock_quantity = $inventory->inventoryDetail->sum('remaining_quantity');
+                        //         if ($in_stock_quantity == 0) {
+                        //             $inventory->quantity_in_stock = 0;
+                        //             $inventory->save();
+                        //         }
+                        //     }
+                        // }
                     }
                 }
                 

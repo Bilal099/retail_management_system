@@ -11,7 +11,7 @@
     <!--Page header-->
     <div class="page-header">
         <div class="page-leftheader">
-            <h4 class="page-title mb-0">Product</h4>
+            <h4 class="page-title mb-0">Inventory</h4>
             {{-- <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#"><i class="fe fe-layout mr-2 fs-14"></i>Tables</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="#">Data Tables</a></li>
@@ -19,7 +19,7 @@
         </div>
         <div class="page-rightheader">
             <div class="btn btn-list">
-                <a href="{{ route('product.create') }}" class="btn btn-primary">Create</a>
+                <a href="{{ route('inventories.create') }}" class="btn btn-primary">Mapping</a>
             </div>
         </div>
     </div>
@@ -38,33 +38,26 @@
                     <table class="table table-bordered text-nowrap" id="example1">
                         <thead>
                             <tr>
-                                <th class="wd-15p border-bottom-0">Name</th>
-                                <th class="wd-20p border-bottom-0">Unit</th>
-                                <th class="wd-15p border-bottom-0">Description</th>
-                                <th class="wd-15p border-bottom-0">Price</th>
-                                <th class="wd-15p border-bottom-0">Action</th>
+                                <th class="wd-5p border-bottom-0">S. No</th>
+                                <th class="wd-10p border-bottom-0">Product Name</th>
+                                <th class="wd-10p border-bottom-0">In Stock</th>
+                                <th class="wd-10p border-bottom-0">Price</th>
+                                <th class="wd-10p border-bottom-0">Quantity</th>
+                                {{-- <th class="wd-15p border-bottom-0">Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $item)
+                            @foreach ($data as $key => $item)
                                 <tr>
-                                    <td>{{ $item['name'] }}</td>
-                                    <td>{{ $item['unit']['name'] }}</td>
-                                    <td>{{ $item['description'] }}</td>
-                                    <td>{{ $item['price'] }}</td>
-                                    <td>
-                                        <a href="{{route('product.edit',$item['id'])}}" class="btn btn-sm btn-icon  btn-purple"><i class="fe fe-edit"></i></a>
-                                        {{-- <a href="{{route('product.edit',$item['id'])}}" class="btn btn-sm btn-icon  btn-danger"><i class="fe fe-trash"></i></a> --}}
-                                        <a href="{{ route('product.destroy', $item['id']) }}" class="btn btn-sm btn-icon  btn-danger"
-                                            onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this product?')) { document.getElementById('delete-product-{{$item['id']}}').submit(); }">
-                                            <i class="fe fe-trash"></i>
-                                        </a>
-                                         
-                                        <form id="delete-product-{{$item['id']}}" action="{{ route('product.destroy', $item['id']) }}" method="POST" style="display: none;">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                    </td>
+                                    <td>{{ @++$key }}</td>
+                                    <td>{{ ucwords(@$item->product->name) }}</td>
+                                    <td>{{ @$item->quantity_in_stock==1? 'Yes':'No' }}</td>
+                                    <td>{{ @$item->product->price }}</td>
+                                    <td>{{ @$item->quantity }}</td>
+                                    {{-- <td>
+                                        <a href="{{route('inventories.show',$item->id)}}" class="btn btn-sm btn-icon  btn-purple"><i class="fe fe-eye"></i></a>
+                                      
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>

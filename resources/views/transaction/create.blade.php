@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary mt-4 mb-0">Create</button>
-                    <a href="{{ route('transactions.index') }}" class="btn btn-primary mt-4 mb-0">Back</a>
+                    <a href="{{ route('transactions.index') }}" class="btn btn-light mt-4 mb-0">Back</a>
                 
             </div>
         </div>
@@ -116,6 +116,7 @@
                                 <th>Unit</th>
                                 <th>Quantity</th>
                                 <th>Unit Price</th>
+                                <th>Additional Price</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -147,6 +148,12 @@
                                             <span class="text-sm text-danger" style="padding: 5px;font-size:12px">{{$message}}</span>
                                         @enderror
                                     </td>
+                                    <td> 
+                                        <input type="number" name="additional_price[]" class="form-control" value="{{old('additional_price.'.$key)}}"> 
+                                        @error('additional_price.'.$key)
+                                            <span class="text-sm text-danger" style="padding: 5px;font-size:12px">{{$message}}</span>
+                                        @enderror
+                                    </td>
                                     <td><a class="btn btn-danger deleteRow"> <i class="fa fa-trash"></i> </a></td>
                                 </tr>
                                 @endforeach
@@ -163,6 +170,7 @@
                                     <td class="product-unit"> <input type="text" name="unit[]" class="form-control" readonly> </td>
                                     <td> <input type="number" name="quantity[]" class="form-control"> </td>
                                     <td> <input type="number" name="unit_price[]" class="form-control"> </td>
+                                    <td> <input type="number" name="additional_price[]" class="form-control"> </td>
                                     <td>{{--  <a class="btn btn-danger deleteRow"> <i class="fa fa-trash"></i> </a> --}} </td>
                                 </tr>
                             @endif
@@ -189,6 +197,7 @@
         <td class="product-unit"> <input type="text" name="unit[]" class="form-control" readonly> </td>
         <td> <input type="number" name="quantity[]" class="form-control"> </td>
         <td> <input type="number" name="unit_price[]" class="form-control"> </td>
+        <td> <input type="number" name="additional_price[]" class="form-control"> </td>
         <td> <a class="btn btn-danger deleteRow"> <i class="fa fa-trash"></i> </a> </td>
     </tr>
 </noscript>

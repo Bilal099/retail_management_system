@@ -11,21 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('inventory_mappings', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50)->nullable();
-            $table->text('description')->nullable();
-            $table->integer('price')->unsigned()->nullable();
-            
-            $table->unsignedBigInteger('unit_id')->nullable();
+            $table->unsignedBigInteger('product_from');
+            $table->integer('quantity_from');
+            $table->integer('price_from');
+            $table->unsignedBigInteger('product_to');
+            $table->integer('quantity_to');
+            $table->integer('price_to');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->unsignedBigInteger('deleted_by')->nullable();
-            
+
             $table->timestamps(); 
             $table->softDeletes();
-            
-            $table->foreign('unit_id')->references('id')->on('units');
+
+            $table->foreign('product_from')->references('id')->on('products');
+            $table->foreign('product_to')->references('id')->on('products');
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('updated_by')->references('id')->on('users');
             $table->foreign('deleted_by')->references('id')->on('users');
@@ -37,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('inventory_mappings');
     }
 };

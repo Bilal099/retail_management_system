@@ -32,7 +32,7 @@
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary mt-4 mb-0">Create</button>
-                    <a href="{{ route('merchant.index') }}" class="btn btn-primary mt-4 mb-0">Back</a>
+                    <a href="{{ route('merchant.index') }}" class="btn btn-light mt-4 mb-0">Back</a>
                 </form>
             </div>
         </div>

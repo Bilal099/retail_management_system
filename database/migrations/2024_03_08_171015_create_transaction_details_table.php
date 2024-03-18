@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id')->nulllable();
             $table->integer('quantity');
             $table->decimal('unit_price', 10, 2);
+            $table->decimal('additional_price', 10, 2);
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('transaction_id')->references('id')->on('transactions');

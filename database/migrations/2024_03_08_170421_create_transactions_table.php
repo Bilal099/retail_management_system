@@ -19,9 +19,20 @@ return new class extends Migration
             $table->decimal('total_amount', 10, 2);
             $table->enum('payment_type', ['credit', 'cash'])->nullable();
             $table->text('comment')->nullable();
+
+            $table->unsignedBigInteger('transaction_by')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->unsignedBigInteger('deleted_by')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
+
             $table->foreign('merchant_id')->references('id')->on('merchants');
+            $table->foreign('transaction_by')->references('id')->on('users');
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('updated_by')->references('id')->on('users');
+            $table->foreign('deleted_by')->references('id')->on('users');
         });
     }
 

@@ -13,7 +13,8 @@ class Inventory extends Model
     protected $fillable = [
         'product_id',
         'quantity_in_stock',
-        'last_restock_date'
+        'last_restock_date',
+        'quantity'
     ];
 
     /**
@@ -24,5 +25,15 @@ class Inventory extends Model
     public function inventoryDetail()
     {
         return $this->hasMany(InventoryDetail::class, 'inventory_id', 'id');
+    }
+
+    /**
+     * Get the product that owns the Inventory
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 }
