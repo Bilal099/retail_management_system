@@ -13,7 +13,7 @@
 											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-align-left header-icon mt-1"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
 										</a>
 									</div>
-									<div class="mt-1">
+									{{-- <div class="mt-1">
 										<form class="form-inline">
 											<div class="search-element">
 												<input type="search" class="form-control header-search" placeholder="Search…" aria-label="Search" tabindex="1">
@@ -24,7 +24,7 @@
 												</button>
 											</div>
 										</form>
-									</div><!-- SEARCH -->
+									</div><!-- SEARCH --> --}}
 									<div class="d-flex order-lg-2 ml-auto">
 										{{-- <a href="{{url('/' . $page='#')}}" data-toggle="search" class="nav-link nav-link-lg d-md-none navsearch">
 											<svg class="header-icon search-icon" x="1008" y="1248" viewBox="0 0 24 24"  height="100%" width="100%" preserveAspectRatio="xMidYMid meet" focusable="false">
