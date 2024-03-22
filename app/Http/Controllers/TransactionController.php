@@ -219,16 +219,22 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        // dd($transaction->transactionDetails);
-        $inventory = Inventory::where(['product_id'=>3])->first();
-        // dd($inventory->inventoryDetail); 
-        // $temp = $inventory->inventoryDetail
-        // ->where('unit_price',30)
-        // ->where('remaining_quantity', '>=', 174)
-        // ->first(); 
+        $product = Product::with(['unit'])->get();
+        $merchant = Merchant::all();
+        $transaction_type = array('sale','purchase');
+        $payment_type = array('cash','credit');
 
-        $temp = $inventory->inventoryDetail->sum('remaining_quantity');
-        dd($temp);
+        $data = $transaction;
+        $details = $transaction->transactionDetails;
+        // dd($data);
+        return view('transaction.show')->with([
+            'data'=>$data,
+            'details'=> $details,
+            'product'=>$product, 
+            'merchant'=>$merchant,
+            'transaction_type' => $transaction_type,
+            'payment_type' => $payment_type
+        ]);
     }
 
     /**

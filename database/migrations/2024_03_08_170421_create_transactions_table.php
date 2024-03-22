@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->enum('transaction_type', ['sale', 'purchase'])->nullable();
-            $table->dateTime('transaction_date');
+            $table->date('transaction_date');
             $table->unsignedBigInteger('merchant_id')->nullable();
             $table->decimal('total_amount', 10, 2);
             $table->enum('payment_type', ['credit', 'cash'])->nullable();
