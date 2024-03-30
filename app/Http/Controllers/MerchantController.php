@@ -59,9 +59,18 @@ class MerchantController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Merchant $merchant)
     {
-        //
+        $merchantTransactions = $merchant->transactions->groupBy('payment_type');
+        $totalCash = isset($merchantTransactions['cash'])? $merchantTransactions['cash']->sum('total_amount'): 0;
+        $totalCredit = isset($merchantTransactions['credit'])? $merchantTransactions['credit']->sum('total_amount'): 0;
+
+        // dd($merchantTransactions['cash']->sum('total_amount'));
+        return view('merchant.show')->with([
+            'merchantTransactions'=>$merchantTransactions,
+            'totalCash' => $totalCash,
+            'totalCredit' => $totalCredit,
+        ]);
     }
 
     /**

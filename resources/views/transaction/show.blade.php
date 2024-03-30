@@ -57,7 +57,8 @@
                         </div>
                     </div>
                     {{-- <button type="submit" class="btn btn-primary mt-4 mb-0">Create</button> --}}
-                    <a href="{{ route('transactions.index') }}" class="btn btn-light mt-4 mb-0">Back</a>
+                    {{-- <a href="{{ route('transactions.index') }}" class="btn btn-light mt-4 mb-0">Back</a> --}}
+                    <a href="{{ URL::previous() }}" class="btn btn-light mt-4 mb-0">Back</a>
                 
             </div>
         </div>

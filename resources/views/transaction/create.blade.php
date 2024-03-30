@@ -73,7 +73,7 @@
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="" class="form-label">Total Amount</label>
-                                <input type="number" name="total_amount" class="form-control" value="{{ old('total_amount') }}" >
+                                <input type="number" id="total_amount" name="total_amount" class="form-control" value="{{ old('total_amount',0) }}" >
                                 @error('total_amount')
                                     <span class="text-sm text-danger" style="padding: 5px;font-size:12px">{{$message}}</span>
                                 @enderror
@@ -137,19 +137,19 @@
                                     </td>
                                     <td class="product-unit"> <input type="text" name="unit[]" value="{{old('unit.'.$key)}}" class="form-control" readonly> </td>
                                     <td> 
-                                        <input type="number" name="quantity[]" class="form-control" value="{{old('quantity.'.$key)}}">
+                                        <input type="number" name="quantity[]" class="form-control product_quantity" value="{{old('quantity.'.$key)}}">
                                         @error('quantity.'.$key)
                                             <span class="text-sm text-danger" style="padding: 5px;font-size:12px">{{$message}}</span>
                                         @enderror
                                     </td>
                                     <td> 
-                                        <input type="number" name="unit_price[]" class="form-control" value="{{old('unit_price.'.$key)}}"> 
+                                        <input type="number" name="unit_price[]" class="form-control product_unit_price" value="{{old('unit_price.'.$key)}}"> 
                                         @error('unit_price.'.$key)
                                             <span class="text-sm text-danger" style="padding: 5px;font-size:12px">{{$message}}</span>
                                         @enderror
                                     </td>
                                     <td> 
-                                        <input type="number" name="additional_price[]" class="form-control" value="{{old('additional_price.'.$key)}}"> 
+                                        <input type="number" name="additional_price[]" class="form-control product_additional_price" value="{{old('additional_price.'.$key)}}"> 
                                         @error('additional_price.'.$key)
                                             <span class="text-sm text-danger" style="padding: 5px;font-size:12px">{{$message}}</span>
                                         @enderror
@@ -168,9 +168,9 @@
                                         </select>
                                     </td>
                                     <td class="product-unit"> <input type="text" name="unit[]" class="form-control" readonly> </td>
-                                    <td> <input type="number" name="quantity[]" class="form-control"> </td>
-                                    <td> <input type="number" name="unit_price[]" class="form-control"> </td>
-                                    <td> <input type="number" name="additional_price[]" class="form-control"> </td>
+                                    <td> <input type="number" name="quantity[]" class="form-control product_quantity"> </td>
+                                    <td> <input type="number" name="unit_price[]" class="form-control product_unit_price"> </td>
+                                    <td> <input type="number" name="additional_price[]" class="form-control product_additional_price"> </td>
                                     <td>{{--  <a class="btn btn-danger deleteRow"> <i class="fa fa-trash"></i> </a> --}} </td>
                                 </tr>
                             @endif
@@ -195,9 +195,9 @@
         </td>
         {{-- <td class="product-unit"> </td> --}}
         <td class="product-unit"> <input type="text" name="unit[]" class="form-control" readonly> </td>
-        <td> <input type="number" name="quantity[]" class="form-control"> </td>
-        <td> <input type="number" name="unit_price[]" class="form-control"> </td>
-        <td> <input type="number" name="additional_price[]" class="form-control"> </td>
+        <td> <input type="number" name="quantity[]" class="form-control product_quantity"> </td>
+        <td> <input type="number" name="unit_price[]" class="form-control product_unit_price"> </td>
+        <td> <input type="number" name="additional_price[]" class="form-control product_additional_price"> </td>
         <td> <a class="btn btn-danger deleteRow"> <i class="fa fa-trash"></i> </a> </td>
     </tr>
 </noscript>
@@ -219,6 +219,7 @@
 
         $("table").on("click", ".deleteRow", function() {
             $(this).closest("tr").remove();
+            calculateTotalPrice();
         });
 
         $('#transaction_type').change(function() {
@@ -229,7 +230,28 @@
             } else  {
                 $('#merchant').prop('disabled', true);
             }
-
         });
+
+        $("table").on('input' ,'.product_quantity, .product_unit_price, .product_additional_price', calculateTotalPrice);
+        
+        function calculateTotalPrice() {
+            let _total = 0;
+            $('tr').each(function () {
+                    var $row = $(this);
+                    var quantity = parseFloat($row.find('.product_quantity').val());
+                    var unitPrice = parseFloat($row.find('.product_unit_price').val());
+                    var additionalPrice = parseFloat($row.find('.product_additional_price').val());
+                    var _totalPrice = 0;
+                    if (!isNaN(quantity) && !isNaN(unitPrice) && !isNaN(additionalPrice)) {
+                        // Calculate total price
+                        _totalPrice = (quantity * unitPrice) + additionalPrice;
+                        _total += parseFloat(_totalPrice);
+                    } else {
+                        // If any input value is not a valid number, set total price field to empty
+                        _totalPrice = 0;
+                    }
+            });
+            $('#total_amount').val(_total);
+        }
     </script>
 @endsection

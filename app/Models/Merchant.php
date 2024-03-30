@@ -17,4 +17,14 @@ class Merchant extends Model
         'details'
     ];
 
+    /**
+     * Get all of the transactions for the Merchant
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'merchant_id', 'id');
+    }
+
 }

@@ -36,13 +36,13 @@ class ProductController extends Controller
             $validator = Validator::make($request->all(), [
                 'product_name' => 'required|string|max:255',
                 'unit' => 'required|string|max:11',
-                'price' => 'nullable|integer|max:255',
+                'price' => 'nullable|integer',
                 'description' => 'nullable|string',
             ]);
             // dd($request->all());
     
             if ($validator->fails()) {
-                // dd($validator->errors());
+                dd($validator->errors());
                 return redirect()->back()->withError($validator->errors())->withInput();
             }
             Product::create([
@@ -53,7 +53,7 @@ class ProductController extends Controller
             ]);
             return redirect()->route('product.index');
         } catch (Exception $e) {
-            // dd($e->getMessage());
+            dd($e->getMessage());
             return redirect()->back()->withError($e->getMessage())->withInput();
         }  
     }

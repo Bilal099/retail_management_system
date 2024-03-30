@@ -53,6 +53,7 @@
                                     <td>{{ $item['address'] }}</td>
                                     <td>{{ $item['details'] }}</td>
                                     <td>
+                                        <a href="{{route('merchant.show',$item['id'])}}" class="btn btn-sm btn-icon  btn-warning"><i class="fe fe-eye"></i></a>
                                         <a href="{{route('merchant.edit',$item['id'])}}" class="btn btn-sm btn-icon  btn-purple"><i class="fe fe-edit"></i></a>
                                         <button type="button" class="btn btn-sm btn-icon  btn-danger"><i class="fe fe-trash"></i></button>
                                     </td>

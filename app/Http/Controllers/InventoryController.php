@@ -84,8 +84,8 @@ class InventoryController extends Controller
 
             $inventoryFrom = Inventory::where(['product_id'=> $request->product_from])->first();
             $quantityFrom = $inventoryFrom->quantity;
-            $inventoryFrom->quantity = $quantityFrom - $request->quantity_to;
-            $inventoryFrom->quantity_in_stock = (($quantityFrom - $request->quantity_to)==0)? 0:1;
+            $inventoryFrom->quantity = $quantityFrom - $request->quantity_from;
+            $inventoryFrom->quantity_in_stock = (($quantityFrom - $request->quantity_from)==0)? 0:1;
             $inventoryFrom->last_restock_date = Carbon\Carbon::now()->format('Y-m-d');
             $inventoryFrom->save();
             DB::commit();

@@ -46,7 +46,9 @@
 							<svg class="side-menu__icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M620-163 450-333l56-56 114 114 226-226 56 56-282 282Zm220-397h-80v-200h-80v120H280v-120h-80v560h240v80H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h167q11-35 43-57.5t70-22.5q40 0 71.5 22.5T594-840h166q33 0 56.5 23.5T840-760v200ZM480-760q17 0 28.5-11.5T520-800q0-17-11.5-28.5T480-840q-17 0-28.5 11.5T440-800q0 17 11.5 28.5T480-760Z"/></svg>
 							<span class="side-menu__label">Inventory</span></a>
 						</li>
-						{{-- <li class="side-item side-item-category">Template Start Here</li>
+						@if (Auth::user()->id == 1)
+							
+						<li class="side-item side-item-category">Template Start Here</li>
 						<li class="side-item side-item-category">Widgets & Maps</li>
 						<li class="slide">
 							<a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#')}}">
@@ -360,7 +362,8 @@
 								<li><a href="{{url('/' . $page='500')}}" class="slide-item"> 500</a></li>
 								<li><a href="{{url('/' . $page='503')}}" class="slide-item"> 503</a></li>
 							</ul>
-						</li> --}}
+						</li>
+						@endif
 					</ul>
 				</aside>
 				<!--aside closed-->
