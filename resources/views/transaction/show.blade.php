@@ -7,7 +7,7 @@
         <div class="alert alert-success mt-2" role="alert"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>{{Session::get('msg')}}</div>
     @endif
 @endsection
-@section('content')						
+@section('content')
 {{-- <form method="POST" action="{{ route('transactions.store') }}"> --}}
 
 <div class="row mt-2">
@@ -22,7 +22,7 @@
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="" class="form-label">Transaction Type</label>
-                                <input type="text" class="form-control" value="{{ ucwords(@$data->transaction_type) }}" readonly>
+                                <input type="text" class="form-control" value="{{ ucwords(@$data->merchant->merchant_name) }}" readonly>
                             </div>
                         </div>
                         <div class="col-lg-6">
@@ -57,9 +57,12 @@
                         </div>
                     </div>
                     {{-- <button type="submit" class="btn btn-primary mt-4 mb-0">Create</button> --}}
-                    {{-- <a href="{{ route('transactions.index') }}" class="btn btn-light mt-4 mb-0">Back</a> --}}
+                    @if (!@$data->is_cancel && !@$data->is_check)
+                        <a href="{{ route('transaction.makerChecker',@$data->id) }}" class="btn btn-primary mt-4 mb-0">Confrim</a>
+                        <a href="{{ route('transaction.cancelTransaction',@$data->id) }}" class="btn btn-danger mt-4 mb-0">Cancel</a>
+                    @endif
                     <a href="{{ URL::previous() }}" class="btn btn-light mt-4 mb-0">Back</a>
-                
+
             </div>
         </div>
     </div>
@@ -94,10 +97,10 @@
                                     <td><input type="text"  class="form-control" value="{{ $value->product->unit->name}}" readonly></td>
                                     <td><input type="text"  class="form-control" value="{{ $value->quantity}}" readonly></td>
                                     <td><input type="text"  class="form-control" value="{{ $value->unit_price}}" readonly></td>
-                                    <td><input type="text"  class="form-control" value="{{ $value->additional_price}}" readonly></td>                                  
+                                    <td><input type="text"  class="form-control" value="{{ $value->additional_price}}" readonly></td>
                                 </tr>
                                 @endforeach
-                           
+
                         </tbody>
                     </table>
                 </div>
@@ -129,16 +132,16 @@
 @section('js')
     {{-- <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
     <script src="{{URL::asset('assets/js/select2.js')}}"></script> --}}
-		
+
     <script>
-        $("#add_detail").click(function(){  
+        $("#add_detail").click(function(){
             $('tbody').append($("#data_row").html());
         });
 
         $("table").on('change','.product-class', function () {
             let _this = $(this);
             let unit = _this.find('option:selected').data('unit');
-            _this.closest('tr').find('.product-unit').find('input').val(unit);                
+            _this.closest('tr').find('.product-unit').find('input').val(unit);
         });
 
         $("table").on("click", ".deleteRow", function() {

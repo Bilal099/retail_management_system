@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Merchant;
+use App\Models\Invoice;
 use Exception;
 
 class MerchantController extends Controller
@@ -45,7 +46,7 @@ class MerchantController extends Controller
                 'address' => 'required|string|max:255',
                 'details' => 'nullable|string',
             ]);
-    
+
             if ($validator->fails()) {
                 return redirect()->back()->withError($validator->errors())->withInput();
             }
@@ -53,7 +54,7 @@ class MerchantController extends Controller
             return redirect()->route('merchant.index');
         } catch (Exception $e) {
             return redirect()->back()->withError($e->getMessage())->withInput();
-        }  
+        }
     }
 
     /**
@@ -61,15 +62,34 @@ class MerchantController extends Controller
      */
     public function show(Merchant $merchant)
     {
-        $merchantTransactions = $merchant->transactions->groupBy('payment_type');
-        $totalCash = isset($merchantTransactions['cash'])? $merchantTransactions['cash']->sum('total_amount'): 0;
-        $totalCredit = isset($merchantTransactions['credit'])? $merchantTransactions['credit']->sum('total_amount'): 0;
+        $merchantTransactions = $merchant->transactions->where('is_check',1);
 
-        // dd($merchantTransactions['cash']->sum('total_amount'));
+        $totalAmount = $merchantTransactions->sum('total_amount');
+        $merchantInvoice = Invoice::where('reference_id',$merchant->id)
+        ->where('reference_model','Merchant' )
+        ->where('is_check', 1)
+        ->get();
+
+        $merchantInvoiceRemaining = Invoice::where('reference_id',$merchant->id)
+        ->where('reference_model','Merchant' )
+        ->where('is_check', 0)
+        ->where('remaining_amount', '>',0)
+        ->get();
+        $totalInvoice = $merchantInvoice->sum('total_amount') + $merchantInvoiceRemaining->sum('remaining_amount');
+
+        $totalRemaining = $totalAmount - $totalInvoice;
+
+        if ($merchantInvoiceRemaining->isNotEmpty()) {
+            $merchantInvoice = $merchantInvoice->merge($merchantInvoiceRemaining);
+            
+        }
+
         return view('merchant.show')->with([
             'merchantTransactions'=>$merchantTransactions,
-            'totalCash' => $totalCash,
-            'totalCredit' => $totalCredit,
+            'totalInvoice'  => $totalInvoice,
+            'totalRemaining' => $totalRemaining,
+            'totalAmount'  => $totalAmount,
+            'merchantInvoice' => $merchantInvoice
         ]);
     }
 
@@ -79,7 +99,6 @@ class MerchantController extends Controller
     public function edit(string $id)
     {
         $data = Merchant::find($id);
-        // dd($data->id);
         return view('merchant.edit')->with('data',$data);
     }
 
@@ -93,14 +112,14 @@ class MerchantController extends Controller
             if (!$merchant) {
                 return response()->json(['error' => 'Merchant not found'], 404);
             }
-            
+
             $validator = Validator::make($request->all(), [
                 'merchant_name' => 'required|string|max:255',
                 'phone' => 'required|string|max:11',
                 'address' => 'required|string|max:255',
                 'details' => 'nullable|string',
             ]);
-    
+
             if ($validator->fails()) {
                 return redirect()->back()->withError($validator->errors())->withInput();
             }
@@ -109,7 +128,7 @@ class MerchantController extends Controller
             return redirect()->route('merchant.index');
         } catch (Exception $e) {
             return redirect()->back()->withError($e->getMessage())->withInput();
-        }  
+        }
     }
 
     /**
@@ -119,4 +138,9 @@ class MerchantController extends Controller
     {
         //
     }
+
+//    public function merchantInvoice(Request $request, string $id) ()
+//    {
+//
+//    }
 }

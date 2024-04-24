@@ -11,11 +11,20 @@ class Transaction extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'transaction_type',
+        'transaction_type_id',
         'transaction_date',
         'merchant_id',
         'total_amount',
         'payment_type',
-        'comment'
+        'comment',
+        'reference_id',
+        'reference_model',
+        'is_check',
+        'is_cancel',
+        'is_complete',
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     /**
@@ -36,5 +45,11 @@ class Transaction extends Model
     public function transactionDetails()
     {
         return $this->hasMany(TransactionDetail::class, 'transaction_id', 'id');
+    }
+
+
+    public function transactionType()
+    {
+         return $this->belongsTo(TransactionType::class, 'transaction_type_id', 'id');
     }
 }
