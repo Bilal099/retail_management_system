@@ -16,13 +16,21 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
 //        \App\Models\Product::factory(10)->create();
 
-         \App\Models\User::factory()->create([
-             'name' => 'Developer',
-             'email' => 'dev@admin.com',
-             'email_verified_at' => now(),
-             'password' => Hash::make('password'),
-             'remember_token' => Str::random(10),
-         ]);
+        \App\Models\User::factory()->create([
+            'name' => 'Developer',
+            'email' => 'dev@admin.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'),
+            'remember_token' => Str::random(10),
+        ]);
+
+        \App\Models\User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'),
+            'remember_token' => Str::random(10),
+        ]);
 
         \App\Models\Unit::create([
             'name'  => 'KG',
